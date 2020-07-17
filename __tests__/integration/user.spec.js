@@ -24,9 +24,12 @@ describe('ROUTE /users', () => {
       if (err) throw err
 
       for (const file of files) {
-        fs.unlink(path.join(folder, file), err => {
-          if (err) throw err
-        })
+        const stat = fs.statSync(path.join(folder, file))
+        if (stat.isFile()) {
+          fs.unlink(path.join(folder, file), err => {
+            if (err) throw err
+          })
+        }
       }
     })
   })
@@ -179,7 +182,7 @@ describe('ROUTE /users', () => {
     const response = await request(app)
       .put('/users')
       .set('Authorization', `Bearer ${user.generateToken()}`)
-      .attach('avatar', path.resolve(__dirname, '..', 'assets', 'aaa.vrau'))
+      .attach('avatar', path.resolve(__dirname, '..', 'assets', 'picture.invalid.format'))
 
     expect(response.status).toBe(400)
   })
