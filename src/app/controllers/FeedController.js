@@ -1,5 +1,6 @@
 import Tweet from '../models/Tweet'
 import User from '../models/User'
+import File from '../models/File'
 import { Op } from 'sequelize'
 
 class FeedController {
@@ -16,6 +17,16 @@ class FeedController {
           [Op.or]: [...followingIds, req.userId]
         }
       },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['username', 'name', 'avatar_id'],
+        include: [{
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'url']
+        }]
+      }],
       order: [
         ['created_at', 'DESC']
       ],

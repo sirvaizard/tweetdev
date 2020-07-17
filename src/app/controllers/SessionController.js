@@ -40,6 +40,7 @@ class SessionController {
     return res.status(200).json({
       user: {
         id,
+        username,
         name,
         email,
         bio,
