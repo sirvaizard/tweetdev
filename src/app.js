@@ -1,7 +1,10 @@
 import { config } from 'dotenv'
 import path from 'path'
 import express from 'express'
+import cors from 'cors'
+import { createServer } from 'http'
 
+import { socketServer } from './app/services/sockets'
 import routes from './routes'
 import './database'
 
@@ -15,9 +18,13 @@ class App {
 
     this.middlewares()
     this.routes()
+
+    this.server = createServer(this.server)
+    socketServer(this.server)
   }
 
   middlewares () {
+    this.server.use(cors())
     this.server.use(express.json())
     this.server.use(
       '/files',
