@@ -94,6 +94,14 @@ class UserController {
       }
     })
 
+    if (req.body.username) {
+      const checkUsernameExists = await User.findOne({ where: { username: req.body.username } })
+
+      if (checkUsernameExists && checkUsernameExists.username !== user.username) {
+        return res.status(400).json({ error: 'Username already exists' })
+      }
+    }
+
     if (req.file) {
       if (user.avatar_id) {
         const avatar = await File.findByPk(user.avatar_id)
@@ -107,14 +115,6 @@ class UserController {
       } else {
         const avatar = await File.create({ name: req.file.filename })
         req.body.avatar_id = avatar.id
-      }
-    }
-
-    if (req.body.username) {
-      const checkUsernameExists = await User.findOne({ where: { username: req.body.username } })
-
-      if (checkUsernameExists && checkUsernameExists.username !== user.username) {
-        return res.status(400).json({ error: 'Username already exists' })
       }
     }
 

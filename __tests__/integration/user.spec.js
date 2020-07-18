@@ -123,6 +123,25 @@ describe('ROUTE /users', () => {
     expect(response.status).toBe(400)
   })
 
+  it('should NOT be able to update user\'s username to one that already exists', async () => {
+    const user = await factory.create('User')
+    await factory.create('User', {
+      username: 'existingtuser',
+      email: 'existingtuser@mrrobot.com'
+    })
+
+    const payload = {
+      username: 'existingtuser'
+    }
+
+    const response = await request(app)
+      .put('/users')
+      .set('Authorization', `Bearer ${user.generateToken()}`)
+      .send(payload)
+
+    expect(response.status).toBe(400)
+  })
+
   it('should be able to show user with valid id', async () => {
     const payload = {
       username: faker.internet.userName(),
@@ -139,8 +158,14 @@ describe('ROUTE /users', () => {
     expect(response.body.id).toBe(body.id)
   })
 
+  it('should NOT be able to show user that does not exists', async () => {
+    const response = await request(app).get('/users/25413')
+
+    expect(response.status).toBe(400)
+  })
+
   it('should NOT be able to show use with invalid id', async () => {
-    const response = await request(app).get('/users/25')
+    const response = await request(app).get('/users/string')
 
     expect(response.status).toBe(400)
   })

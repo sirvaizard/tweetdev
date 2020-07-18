@@ -68,9 +68,10 @@ describe('ROUTE /follower', () => {
 
   it('should NOT be able to unfollow someone that user does not follows', async () => {
     const userOne = await factory.create('User')
+    const userToUnfollow = await factory.create('User', { username: 'teeest', email: 'teest@test.com' })
 
     const response = await request(app)
-      .delete('/users/nonfollowedid/unfollow')
+      .delete(`/users/${userToUnfollow.id}/unfollow`)
       .set('Authorization', `Bearer ${userOne.generateToken()}`)
 
     expect(response.status).toBe(400)

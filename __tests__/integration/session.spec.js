@@ -9,7 +9,7 @@ describe('ROUTE /sessions', () => {
     await truncate()
   })
 
-  it('should NOT be able to authenticate with invalid credentials', async () => {
+  it('should NOT be able to authenticate with invalid password', async () => {
     const user = await factory.create('User', {
       password: '123456'
     })
@@ -24,7 +24,7 @@ describe('ROUTE /sessions', () => {
     expect(response.status).toBe(400)
   })
 
-  it('should be able to authenticate with valid credentials', async () => {
+  it('should be able to authenticate with valid password', async () => {
     const user = await factory.create('User', {
       password: '123456'
     })
@@ -37,6 +37,29 @@ describe('ROUTE /sessions', () => {
       })
 
     expect(response.status).toBe(200)
+  })
+
+  it('should NOT be able to authenticate with invalid username', async () => {
+    const response = await request(app)
+      .post('/sessions')
+      .send({
+        username: 'invalidusername',
+        password: '123456'
+      })
+
+    expect(response.status).toBe(400)
+  })
+
+  it('should NOT be able to authenticate with invalid inputs', async () => {
+    // inputs are too shorts
+    const response = await request(app)
+      .post('/sessions')
+      .send({
+        username: 'ab',
+        password: 'cb'
+      })
+
+    expect(response.status).toBe(400)
   })
 
   it('should return a jwt token when authenticated', async () => {
