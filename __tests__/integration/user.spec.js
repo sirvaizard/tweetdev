@@ -82,15 +82,16 @@ describe('ROUTE /users', () => {
     const payload = {
       username: faker.internet.userName(),
       name: faker.name.findName(),
-      password: '123456',
-      password_confirmation: '123456'
+      password: '123456'
     }
 
     const response = await request(app)
       .put('/users')
       .set('Authorization', `Bearer ${user.generateToken()}`)
       .attach('avatar', path.resolve(__dirname, '..', 'assets', 'avatar.jpg'))
-      .send(payload)
+      .field('username', payload.username)
+      .field('name', payload.name)
+      .field('password', payload.password)
 
     expect(response.status).toBe(200)
   })
@@ -118,7 +119,7 @@ describe('ROUTE /users', () => {
       .field('name', payload.name)
       .field('password', payload.password)
       .field('password_confirmation', payload.password_confirmation)
-      .send(payload)
+      // .send(payload)
 
     expect(response.status).toBe(400)
   })
@@ -143,29 +144,32 @@ describe('ROUTE /users', () => {
   })
 
   it('should be able to show user with valid id', async () => {
-    const payload = {
-      username: faker.internet.userName(),
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      password: faker.internet.password()
-    }
+    const user = await factory.create('User')
 
-    const { body } = await request(app).post('/users').send(payload)
-
-    const response = await request(app).get(`/users/${body.id}`)
+    const response = await request(app)
+      .get(`/users/${user.id}`)
+      .set('Authorization', `Bearer ${user.generateToken()}`)
 
     expect(response.status).toBe(200)
-    expect(response.body.id).toBe(body.id)
+    expect(response.body.id).toBe(user.id)
   })
 
   it('should NOT be able to show user that does not exists', async () => {
-    const response = await request(app).get('/users/25413')
+    const user = await factory.create('User')
+
+    const response = await request(app)
+      .get('/users/25413')
+      .set('Authorization', `Bearer ${user.generateToken()}`)
 
     expect(response.status).toBe(400)
   })
 
-  it('should NOT be able to show use with invalid id', async () => {
-    const response = await request(app).get('/users/string')
+  it('should NOT be able to show use with a non number id', async () => {
+    const user = await factory.create('User')
+
+    const response = await request(app)
+      .get('/users/string')
+      .set('Authorization', `Bearer ${user.generateToken()}`)
 
     expect(response.status).toBe(400)
   })
