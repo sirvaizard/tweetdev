@@ -12,19 +12,25 @@ A Twitter alike API that I created while studying TDD.
 | PUT |/users/:id|Update an existing user|Yes|
 | POST |/users/:toFollowId/follow|Follow a user|Yes|
 | DELETE |/users/:toUnfollowId/unfollow|Unfollow a user|Yes|
-\
+
+
+
 **/sessions**
 |Method|Route|Info|Require Authentication|
 |--|--|--|--|
 | POST |/sessions|Authenticate a user|No|
-\
+
+
+
 **/tweets**
 |Method|Route|Info|Require Authentication|
 |--|--|--|--|
 | GET |/tweets/:id|Retrieve a tweet|Yes|
 | POST |/tweets|Create a new tweet|Yes|
 | DELETE |/tweets|Delete an existing tweet|Yes|
-\
+
+
+
 **/feed**
 |Method|Route|Info|Require Authentication|
 |--|--|--|--|
