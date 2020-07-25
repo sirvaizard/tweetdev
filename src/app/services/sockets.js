@@ -1,22 +1,26 @@
 import io from 'socket.io'
 
+const activeConnections = new Map()
+
 function setup (server) {
   const socketServer = io(server)
-  let id = 0
 
   socketServer.on('connect', (socket) => {
-    socket.myId = id++
-    console.log('connected ' + socket.myId)
+    const { id } = socket.handshake.query
 
-    socket.on('send tweet', (tweet) => {
-      console.log(tweet)
-      socket.emit('get tweet', 'hi and i get a tweet')
-    })
+    const oldConnection = activeConnections.get(id)
+
+    if (oldConnection) { oldConnection.disconnect() }
+
+    activeConnections.set(id, socket)
+
+    console.log('connected ' + id)
 
     socket.on('disconnect', () => {
-      console.log('disconnected ' + socket.myId)
+      console.log('disconnected ' + id)
+      activeConnections.delete(id)
     })
   })
 }
 
-export { setup as socketServer }
+export { setup as socketServer, activeConnections }
