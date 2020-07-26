@@ -9,7 +9,7 @@ import File from '../models/File'
 class UserController {
   async show (req, res) {
     const schema = Joi.object({
-      id: Joi.number().required()
+      username: Joi.string().required()
     })
 
     const validation = schema.validate(req.params)
@@ -18,9 +18,12 @@ class UserController {
       return res.status(400).json({ error: validation.error })
     }
 
-    const { id } = req.params
+    const { username } = req.params
 
-    const user = await User.findByPk(id, {
+    const user = await User.findOne({
+      where: {
+        username
+      },
       attributes: ['id', 'name', 'username', 'email', 'avatar_id', 'github', 'bio'],
       include: {
         model: File,
