@@ -28,11 +28,11 @@ class SessionController {
     })
 
     if (!user) {
-      return res.status(400).json({ error: 'User not found' })
+      return res.status(400).json({ field: 'username', message: 'User not found' })
     }
 
     if (!(await user.checkPassword(password))) {
-      return res.status(400).json({ error: 'Invalid password' })
+      return res.status(400).json({ field: 'password', message: 'Invalid password' })
     }
 
     const { id, name, email, bio, github, avatar } = user
