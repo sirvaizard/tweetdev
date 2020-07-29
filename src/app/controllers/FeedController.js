@@ -45,6 +45,16 @@ class FeedController {
       where: {
         author_id: id
       },
+      include: [{
+        model: User,
+        as: 'author',
+        attributes: ['username', 'name', 'avatar_id'],
+        include: [{
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'url']
+        }]
+      }],
       order: [
         ['created_at', 'DESC']
       ],
