@@ -27,6 +27,7 @@ routes.delete('/tweets/:id', TweetController.destroy)
 routes.get('/users/:username', UserController.show)
 routes.put('/users', upload.single('avatar'), UserController.update)
 
+routes.get('/users/:id/following', FollowController.show)
 routes.post('/users/:toFollowId/follow', FollowController.store)
 routes.delete('/users/:toUnfollowId/unfollow', FollowController.destroy)
 

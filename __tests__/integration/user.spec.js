@@ -143,11 +143,11 @@ describe('ROUTE /users', () => {
     expect(response.status).toBe(400)
   })
 
-  it('should be able to show user with valid id', async () => {
+  it('should be able to show user with valid username', async () => {
     const user = await factory.create('User')
 
     const response = await request(app)
-      .get(`/users/${user.id}`)
+      .get(`/users/${user.username}`)
       .set('Authorization', `Bearer ${user.generateToken()}`)
 
     expect(response.status).toBe(200)

@@ -86,4 +86,26 @@ describe('ROUTE /follower', () => {
 
     expect(response.status).toBe(400)
   })
+
+  it('should return false if user does not follow some specific user', async () => {
+    const user = await factory.create('User')
+
+    const response = await request(app)
+      .get('/users/9999999/following')
+      .set('Authorization', `Bearer ${user.generateToken()}`)
+
+    expect(response.body.following).toBe(false)
+  })
+
+  it('should return true if user does follow some specific user', async () => {
+    const user = await factory.create('User')
+    const userToFollow = await factory.create('User', { username: 'teest', email: 'teest@test.com' })
+    await Followers.create({ follower_id: user.id, following_id: userToFollow.id })
+
+    const response = await request(app)
+      .get(`/users/${userToFollow.id}/following`)
+      .set('Authorization', `Bearer ${user.generateToken()}`)
+
+    expect(response.body.following).toBe(true)
+  })
 })

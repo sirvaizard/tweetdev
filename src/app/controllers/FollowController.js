@@ -2,6 +2,23 @@ import User from '../models/User'
 import Followers from '../models/Followers'
 
 class FollowerController {
+  async show (req, res) {
+    const { id } = req.params
+
+    const isFollowing = await Followers.findOne({
+      where: {
+        follower_id: req.userId,
+        following_id: id
+      }
+    })
+
+    if (!isFollowing) {
+      return res.status(200).json({ following: false })
+    }
+
+    return res.status(200).json({ following: true })
+  }
+
   async store (req, res) {
     const { toFollowId } = req.params
 
